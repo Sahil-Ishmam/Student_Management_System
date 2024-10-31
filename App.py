@@ -14,6 +14,8 @@ class Person:
         Name: {self.name}
         Age: {self.age}
         Address: {self.address}"""
+    
+
 
 class Student(Person):
     def __init__(self, name, age, address, student_id):
@@ -47,13 +49,8 @@ class Student(Person):
         if not already_enrolled:
             self.enrolled_courses.append(course_name)
             return True
-            # Student Sami (ID: S001) enrolled in Physics (Code: PHY101).
-            # print(f"Student {self.name} (ID: {self.student_id}) enrolled in {course_name}")
-            pass
         else:
-            # print(f"Student {self.name} (ID: {self.student_id} is already enrolled in {course_name})")
             return False
-            pass
 
 
     def display_student_info(self):
@@ -70,8 +67,8 @@ class Course:
         self.course_code = course_code
         self.instructor = instructor
         self.course_students = []
-    # Add student in a specific course : same as enroll student 
-    def add_student(self, student): # pass it as a object (student's)
+    
+    def add_student(self, student,data_loaded = True): # pass it as a object (student's)
         no_duplicate = True
         S_id = student.student_id
         S_name = student.name
@@ -87,11 +84,13 @@ class Course:
                 break   
         if no_duplicate:
             self.course_students.append(student)
-            print(f"\nStudent {S_name} (ID: {S_id}) enrolled in {C_name} (Code: {C_Code}).")
-            pass
+            if data_loaded:
+                print(f"\nStudent {S_name} (ID: {S_id}) enrolled in {C_name} (Code: {C_Code}).")
+                pass
         else:
-            print(f"\nStudent {S_name} (ID: {S_id} already enrolled in {C_name} (Code{C_Code}.")
-            pass
+            if data_loaded:
+                print(f"\nStudent {S_name} (ID: {S_id} already enrolled in {C_name} (Code{C_Code}.")
+                pass
 
 
     def display_course_info(self):
@@ -101,28 +100,115 @@ class Course:
         Instructor: {self.instructor}
         Enrolled Students: {[student.name for student in self.course_students]}""")
 
-
-
 def save_data():
+    
+    unique_students = {student.student_id: student for student in students}.values()
+    unique_courses = {course.course_code: course for course in courses}.values()
+
+
+    
+    
+    data = {
+        "students": [
+            {
+                "name": student.name,
+                "age": student.age,
+                "address": student.address,
+                "student_id": student.student_id,
+                "grades": student.grades,
+                "enrolled_courses": student.enrolled_courses
+            }
+            for student in unique_students
+        ],
+        "courses": [
+            {
+                "course_name": course.course_name,
+                "course_code": course.course_code,
+                "instructor": course.instructor,
+                "course_students": [s.student_id for s in course.course_students]
+            }
+            for course in unique_courses
+        ]
+    }
+    with open("students_data.json", "w") as file:
+        json.dump(data, file, indent=4)
+    print("\n\tData saved successfully.\n")
+
+
+def load_data(data_loaded=False):
     try:
-        pass
-    except Exception as error:
-        print(f"{error}")
-        print("\n\tPlease Try again\n")
+        with open("students_data.json", "r") as file:
+            data = json.load(file) # { "Key" : "Value"}
+
+            # student
+            existing_student_ids =set()
+            for student in students:
+                existing_student_ids.add(student.student_id)
+            
+            for s_data in data["students"]:
+                if s_data["student_id"] not in existing_student_ids:
+
+                    t_name = s_data["name"]
+                    t_age =  s_data["age"]
+                    t_address = s_data["address"]
+                    t_student_id = s_data["student_id"]
+                    t_grades = s_data["grades"]
+                    t_enrolled_courses = s_data["enrolled_courses"]
+
+                    student = Student(t_name,t_age,t_address,t_student_id)
+                    student.grades =t_grades
+                    student.enrolled_courses = t_enrolled_courses
+
+                    students.append(student)
+                    # track load
+                    existing_student_ids.add(s_data["student_id"])
 
 
+            # course
+            existing_course_codes = set()
+            for course in courses:
+                existing_course_codes.add(course.course_code)
 
-def load_data():
-    try:
-        pass
+
+            for c_data in data["courses"]:
+                if c_data["course_code"] not in existing_course_codes:
+
+                    t_course_name =c_data["course_name"]
+                    t_course_code = c_data["course_code"]
+                    t_instructor = c_data["instructor"]
+                    course = Course(t_course_name,t_course_code,t_instructor)
+
+
+                    
+                    for student_id in c_data["course_students"]:
+                        
+                        student = None
+                        for s in students:
+                             if s.student_id == student_id:
+                                 student = s
+                                 break
+                        
+                        if student:
+                            course.add_student(student,data_loaded=False)
+                    
+                    courses.append(course)
+                    # track load
+                    existing_course_codes.add(c_data["course_code"])
+
+        if data_loaded:
+            print("\n\tData loaded successfully.\n")
+
+    
     except FileNotFoundError:
-        print("No data file found. Starting fresh.")
-
+        if data_loaded:
+            print(f"\n\tNo file found {FileNotFoundError}\n")
 
 
 
 if __name__ == '__main__':
-    load_data()
+    data_loaded = False
+    load_data(data_loaded)
+    data_loaded = True
     while True:
         print("\n==== Student Management System ====\n")
         print("""
@@ -241,8 +327,6 @@ if __name__ == '__main__':
                 print(f"\nInvalid, {error}")
                 print('\tPlease try again')
 
-                
-
         elif option == "4":
             try:
                 S_id = input("Enter Student ID: ")
@@ -351,14 +435,16 @@ if __name__ == '__main__':
 
         elif option == "8":  
             try:
-                load_data()
+                load_data(data_loaded=True)
             except Exception as error:
                 print(f"Invalid, {error}")
                 print('Please try again')
             pass
 
         elif option == "0":
-            print("Exiting Student Management System. Goodbye!")
+            print("\n\tExiting Student Management System. Goodbye!\n")
             break
         else:
-            print("Invalid Input")
+            print("\nInvalid Input")
+            print("Please Choose an correct Option\n")
+            

@@ -1,0 +1,108 @@
+{
+    "students": [
+        {
+            "name": "Ishmam",
+            "age": 22,
+            "address": "Bishwanath",
+            "student_id": "71",
+            "grades": {
+                "SP": "A",
+                "DS": "B",
+                "Algo": "C",
+                "OOP": "D",
+                "CP": "A",
+                "Database": "A"
+            },
+            "enrolled_courses": [
+                "SP",
+                "DS",
+                "Algo",
+                "OOP",
+                "CP",
+                "Database"
+            ]
+        },
+        {
+            "name": "Mahmud",
+            "age": 24,
+            "address": "Habigonj",
+            "student_id": "56",
+            "grades": {
+                "DS": "B",
+                "SP": "B"
+            },
+            "enrolled_courses": [
+                "SP",
+                "DS"
+            ]
+        },
+        {
+            "name": "Salim",
+            "age": 23,
+            "address": "Moulobibazar",
+            "student_id": "31",
+            "grades": {
+                "SP": "A",
+                "DS": "A+"
+            },
+            "enrolled_courses": [
+                "SP",
+                "DS"
+            ]
+        }
+    ],
+    "courses": [
+        {
+            "course_name": "SP",
+            "course_code": "CSE210",
+            "instructor": "Pavel",
+            "course_students": [
+                "71",
+                "56",
+                "31"
+            ]
+        },
+        {
+            "course_name": "DS",
+            "course_code": "CSE215",
+            "instructor": "Iftikar",
+            "course_students": [
+                "71",
+                "56",
+                "31"
+            ]
+        },
+        {
+            "course_name": "Algo",
+            "course_code": "CSE231",
+            "instructor": "Rafee",
+            "course_students": [
+                "71"
+            ]
+        },
+        {
+            "course_name": "OOP",
+            "course_code": "CSE245",
+            "instructor": "Nafiz Sir",
+            "course_students": [
+                "71"
+            ]
+        },
+        {
+            "course_name": "CP",
+            "course_code": "CSE200",
+            "instructor": "Iftikar sir",
+            "course_students": [
+                "71"
+            ]
+        },
+        {
+            "course_name": "Database",
+            "course_code": "CSE233",
+            "instructor": "Noushin Apu",
+            "course_students": [
+                "71"
+            ]
+        }
+    ]
+}
